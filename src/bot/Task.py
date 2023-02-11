@@ -3,6 +3,8 @@ import datetime
 club_council_path = r'src/club_council.txt'
 
 
+
+
 # noinspection PyGlobalUndefined
 class Task(object):
     def __init__(self, info):
