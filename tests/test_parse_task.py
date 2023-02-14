@@ -1,5 +1,3 @@
-import os
-
 from src import parse
 
 task = '#задача  \n' \
