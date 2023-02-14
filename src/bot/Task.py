@@ -14,7 +14,7 @@ class Task(object):
     def __init__(self, info):
         """
         Принимает список параметров и присваивает их полям
-        :param info:
+        :param info: список параметров
         """
         # info = [title, manager_id, performers_id, deadline, description]
         self.title = info[0]
