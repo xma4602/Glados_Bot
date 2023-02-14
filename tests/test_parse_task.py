@@ -1,14 +1,14 @@
 import os
 
-from src.parsing.parse import parse_message
+from src import parse
 
 task = '#задача  \n' \
        'Написать бота  \n' \
        'Гудков  \n' \
        'Ханов  ,     Макурин  \n' \
-       'до 01.03  \n' \
-       '  сделайте     пожалуйста бота  '
+       'до 12:30 01.03.22   \n' \
+       '  сделайте     пожалуйста бота \n' \
+       'очень сука блин нужно '
 
-os.chdir('..')
-t = parse_message(task)
+t = parse.message(task)
 print(t)
