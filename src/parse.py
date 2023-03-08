@@ -2,6 +2,7 @@ import datetime
 import os
 import re
 
+from src import MessageManager
 from src.bot.Task import Task
 
 
@@ -21,7 +22,9 @@ def message(text: str, sender_id: str):
 
     # если в заголовке тег задачи, отправляем на парсинг задачи
     if text[0] == '#задача':
-        return task(text[1:], sender_id)
+        t = task(text[1:], sender_id)
+        MessageManager.send(t.notice_recipients())
+        MessageManager.plan(t.notice_deadlines())
 
 
 def task(task_data: list, sender_id: str):
@@ -37,15 +40,13 @@ def task(task_data: list, sender_id: str):
     task_data[2] = time(task_data[2])
     task_data[3] = task_data[3:]
 
-    task_data = dict(
+    return Task(
         title=task_data[0],
         manager_id=sender_id,
         performers_id=task_data[1],
         deadline=task_data[2],
         description=task_data[3]
     )
-
-    return Task(task_data)
 
 
 def time(date_time):
@@ -84,14 +85,30 @@ def time(date_time):
     )
 
 
-def users_id(users_surnames):
+def users_id(users_surnames: list):
     """
     Получиет имена пользователей и возвращает их id
     :param users_surnames: список фамилий пользователей
     :return: список соответствующих фамилиям id
     """
     # по ключам фамилий из словаря users формируем список id
-    return [users.get(surname.lower()) for surname in users_surnames]
+    return [users[surname.lower()] for surname in users_surnames]
+
+
+def users_names(users_id: list):
+    """
+    Получиет имена пользователей и возвращает их id
+    :param users_id: список фамилий пользователей
+    :return: список соответствующих фамилиям id
+    """
+    names = []
+    for user_id in users_id:
+        for name, id in users.items():
+            if id == user_id:
+                names.append(name)
+                break
+
+    return names
 
 
 def club_users():
@@ -99,13 +116,13 @@ def club_users():
     Считывает с файла записи о фамилия-id и заносит в словарь.
     :return: словарь фамилия-id членов совета клуба
     """
-    os.chdir('..')
+    os.chdir(r'C:\Users\xma46\Documents\Программирование\Python\Glados_Bot\src')
     # считываем записи построчно
     with open(r'src/club_council.txt', 'r', encoding="utf-8") as file:
         data = file.readlines()
 
     # каждую строку забиваем на слова и парсим в фамилия-id
-    return dict((surname, int(id))
+    return dict((surname, id)
                 for surname, id in (surname_id.strip('\n').split(' ')
                                     for surname_id in data))
 
