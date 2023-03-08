@@ -1,6 +1,6 @@
 import asyncio
 import datetime
-import re
+import src.parse as parse
 
 import aiohttp
 import vk_api
@@ -165,25 +165,10 @@ async def bot(event):
     global time_remainder
     global counter
     if event.type == VkBotEventType.MESSAGE_NEW:
-        message = event.object.message.get('text').lower()
-        a = list(event.object.values())[0].get('from_id')
-        print(a)
-        if re.match('jarvis ', message) or re.match('джарвиз ', message) \
-                or re.match('jarvis, ', message) or re.match('джарвиз, ', message) \
-                or re.match('jarvis', message) or re.match('джарвиз', message):
-            if re.search('привет', message) or re.search('hi', message):
-                hello(event)
-            elif re.search('спасибо', message):
-                thanks(event)
-            elif re.search('дай анекдот', message):
-                anecdote(event)
-            elif re.search('создай напоминание', message) or re.search('create a reminder', message):
-                notice(event, message)
-            elif re.search('расписание', message) or re.search('timetable', message):
-                schedule(event)
-            else:
-                unclear(event)
-
+        text = event.object.message.get('text').lower()
+        sender_id = list(event.object.values())[0].get('from_id')
+        print(sender_id)
+        parse.message(text, sender_id)
 
 async def main():
     for event in longpoll.listen():

@@ -6,7 +6,7 @@ from src.bot.Task import Task
 
 
 # главный метод парсинга сообщения
-def message(text):
+def message(text: str, sender_id: str):
     """
     Получает и текст сообщения и обрабатывает его.
     Не возвращает результат.
@@ -21,10 +21,10 @@ def message(text):
 
     # если в заголовке тег задачи, отправляем на парсинг задачи
     if text[0] == '#задача':
-        return task(text[1:])
+        return task(text[1:], sender_id)
 
 
-def task(task_data):
+def task(task_data: list, sender_id: str):
     """
     Получает и парсит данные о задаче
     :param task_data: массив данных задачи.
@@ -33,12 +33,19 @@ def task(task_data):
     """
 
     # вызываем методы парсинга для каждого поля
-    task_data[1] = users_id([task_data[1]])[0]
-    task_data[2] = users_id(task_data[2].replace(',', '').split())
-    task_data[3] = time(task_data[3])
-    task_data[4] = task_data[4:]
+    task_data[1] = users_id(task_data[1].replace(',', '').split())
+    task_data[2] = time(task_data[2])
+    task_data[3] = task_data[3:]
 
-    return Task(task_data[0:5])
+    task_data = dict(
+        title=task_data[0],
+        manager_id=sender_id,
+        performers_id=task_data[1],
+        deadline=task_data[2],
+        description=task_data[3]
+    )
+
+    return Task(task_data)
 
 
 def time(date_time):

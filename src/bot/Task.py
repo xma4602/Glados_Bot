@@ -1,4 +1,4 @@
-class Task(object):
+class Task:
     """
     Класс реализующий хранение атрибутов задачи.
 
@@ -11,17 +11,18 @@ class Task(object):
     * description: описание string[]
 
     """
-    def __init__(self, info):
+
+    def __init__(self, task_data):
         """
         Принимает список параметров и присваивает их полям
-        :param info: список параметров
+        :param task_data: список параметров
         """
-        # info = [title, manager_id, performers_id, deadline, description]
-        self.title = info[0]
-        self.manager_id = info[1]
-        self.performers_id = info[2]
-        self.deadline = info[3]
-        self.description = info[4]
+        # task_data = {title, manager_id, performers_id, deadline, description}
+        self.title = task_data['title']
+        self.manager_id = task_data['manager_id']
+        self.performers_id = task_data['performers_id']
+        self.deadline = task_data['deadline']
+        self.description = task_data['description']
 
     def __str__(self):
         """
