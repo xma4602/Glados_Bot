@@ -10,4 +10,4 @@ description = 'ура\n' \
               'бот\n' \
               'работает '
 n = Notice([title, recipients_id, deadline, description])
-print(n.message())
+print(n.message_everyone())

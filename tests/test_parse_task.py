@@ -7,5 +7,5 @@ task = '#задача  \n' \
        '  сделайте     пожалуйста бота \n' \
        'очень сука блин нужно '
 
-t = parse.message(task, '012345')
+t = parse.message(task, '148866296')
 print(t)
