@@ -5,6 +5,19 @@ import re
 from src import MessageManager
 from src.bot.Task import Task
 
+users = {
+    'гудков': '148866296',
+    'мезенцев': '62393212',
+    'макурин': '210242776',
+    'ханов': '257165020',
+    'ган': '83886005',
+    'казанцев': '134621926',
+    'юсупов': '100822494',
+    'фунин': '168944389',
+    'мурзина': '739900329',
+    'маркарян': '322610705'
+}
+
 
 # главный метод парсинга сообщения
 def message(text: str, sender_id: str):
@@ -111,24 +124,7 @@ def users_names(users_id: list):
     return names
 
 
-def club_users():
-    """
-    Считывает с файла записи о фамилия-id и заносит в словарь.
-    :return: словарь фамилия-id членов совета клуба
-    """
-    os.chdir(r'C:\Users\xma46\Documents\Программирование\Python\Glados_Bot\src')
-    # считываем записи построчно
-    with open(r'src/club_council.txt', 'r', encoding="utf-8") as file:
-        data = file.readlines()
-
-    # каждую строку забиваем на слова и парсим в фамилия-id
-    return dict((surname, id)
-                for surname, id in (surname_id.strip('\n').split(' ')
-                                    for surname_id in data))
-
-
 """
 Операция создания словаря фамилия-id членов совета клуба
 !НЕ УДАЛЯТЬ!
 """
-users = club_users()

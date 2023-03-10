@@ -25,7 +25,7 @@ time_remainder = now
 default_datetime_remainder = now.replace(hour=0, minute=0, second=0, microsecond=0, day=1, month=1, year=1950)
 
 
-def send(message, id):
+async def send(message, id):
     vk.messages.send(
         key='f25124946931a230031d57ddd73e4e0efcec4b7b',  # ВСТАВИТЬ ПАРАМЕТРЫ
         server='https://lp.vk.com/wh218320118',
@@ -36,18 +36,18 @@ def send(message, id):
     )
 
 
-def hello(event):
+async def hello(event):
     if event.from_chat:
         send('Привет!', event.chat_id)
 
 
-def thanks(event):
+async def thanks(event):
     if event.from_chat:
         print(event.chat_id)
         send('Нет проблем! Рад стараться!', event.chat_id)
 
 
-def anecdote(event):
+async def anecdote(event):
     global counter
     if event.from_chat:
         async with aiohttp.ClientSession() as session:
@@ -63,7 +63,7 @@ def anecdote(event):
         send(send_message, event.chat_id)
 
 
-def notice(event, message):
+async def notice(event, message):
     # джарвиз, создай напоминание 06-02-2023 15:17 текст напоминания
     global date_remainder, time_remainder, default_datetime_remainder
     if event.from_chat:
@@ -85,12 +85,12 @@ def notice(event, message):
             default_datetime_remainder = now_obj
 
 
-def unclear(event):
+async def unclear(event):
     if event.from_chat:
         send('Я не понимаю', event.chat_id)
 
 
-def schedule(event):
+async def schedule(event):
     weekday = datetime.datetime.today().weekday()
     week = datetime.datetime.today().isocalendar()[1] - 5
     print(week)
