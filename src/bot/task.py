@@ -2,7 +2,7 @@ from datetime import datetime
 from datetime import timedelta
 
 from src import parse
-from src.bot.Notice import Notice
+from src.bot.notice import Notice
 
 
 class Task:
@@ -51,7 +51,7 @@ class Task:
 
     def notice_recipients(self) -> Notice:
         return Notice(
-            title='Вам поступила новая задача от' + parse.users_names([self.manager_id])[0],
+            title='Вам поступила новая задача от ' + parse.id_to_names([self.manager_id])[0],
             recipients_id=self.performers_id,
             time=datetime.now(),
             description=[self.title] + self.description
