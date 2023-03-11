@@ -1,6 +1,6 @@
 import datetime
 
-from src.bot.Notice import Notice
+from src.bot.notice import Notice
 
 title = 'бот работает'
 recipients_id = [1, 2, 3]

@@ -1,6 +1,5 @@
 import asyncio
 import datetime
-import src.parse as parse
 
 import aiohttp
 import vk_api
@@ -8,6 +7,7 @@ from bs4 import BeautifulSoup
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.upload import VkUpload
 from vk_api.utils import get_random_id
+from src import message_manager, parse
 
 vk_session = vk_api.VkApi(
     token='vk1.a.fW6xhIXyLDwog_FX1fRTMiyEoVZL_b0ENm2J4y5lBKZ0hefDhJylNknLzd4I72GJ6'
@@ -25,7 +25,7 @@ time_remainder = now
 default_datetime_remainder = now.replace(hour=0, minute=0, second=0, microsecond=0, day=1, month=1, year=1950)
 
 
-async def send(message, id):
+async def send(message, id=1):
     vk.messages.send(
         key='f25124946931a230031d57ddd73e4e0efcec4b7b',  # ВСТАВИТЬ ПАРАМЕТРЫ
         server='https://lp.vk.com/wh218320118',
@@ -169,6 +169,9 @@ async def bot(event):
         sender_id = list(event.object.values())[0].get('from_id')
         print(sender_id)
         parse.message(text, sender_id)
+    if message_manager.check_time():
+        message_manager.send_nearest_notice()
+
 
 async def main():
     for event in longpoll.listen():
