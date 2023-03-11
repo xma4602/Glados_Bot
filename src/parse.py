@@ -1,9 +1,8 @@
-import datetime
-import os
+from datetime import datetime
 import re
 
-from src import MessageManager
-from src.bot.Task import Task
+from src import message_manager
+from src.bot.task import Task
 
 users = {
     'гудков': '148866296',
@@ -24,6 +23,7 @@ def message(text: str, sender_id: str):
     """
     Получает и текст сообщения и обрабатывает его.
     Не возвращает результат.
+    :param sender_id: айди отправителя сообщения
     :param text: string текст соотщения
     """
 
@@ -35,34 +35,33 @@ def message(text: str, sender_id: str):
 
     # если в заголовке тег задачи, отправляем на парсинг задачи
     if text[0] == '#задача':
-        t = task(text[1:], sender_id)
-        MessageManager.send(t.notice_recipients())
-        MessageManager.plan(t.notice_deadlines())
+        task = parse_task(text[1:], sender_id)
+        message_manager.new_task(task)
 
 
-def task(task_data: list, sender_id: str):
+def parse_task(task_data: list, sender_id: str):
     """
     Получает и парсит данные о задаче
+    :param sender_id: айди отправителя сообщения
     :param task_data: массив данных задачи.
     task_data = [заголовок, организатор, список исполнителей, дедлайн, описание]
     :return: экземпляр Task
     """
 
     # вызываем методы парсинга для каждого поля
-    task_data[1] = users_id(task_data[1].replace(',', '').split())
-    task_data[2] = time(task_data[2])
-    task_data[3] = task_data[3:]
+    task_data[1] = names_to_id(task_data[1].replace(',', '').split())
+    task_data[2] = pasrse_time(task_data[2])
 
     return Task(
         title=task_data[0],
         manager_id=sender_id,
         performers_id=task_data[1],
         deadline=task_data[2],
-        description=task_data[3]
+        description=task_data[3:]
     )
 
 
-def time(date_time):
+def pasrse_time(date_time):
     """
     Получает и парсит данные о времени
     :param date_time: дата и время
@@ -78,18 +77,19 @@ def time(date_time):
     # проверяем наличие года и дообрабатываем его
     year = date.group(4)
     if year is None:
-        year = datetime.datetime.today().year
+        year = datetime.today().year
     else:
         if len(year) == 4:
             year = int(year)
         else:
             year = int(year) + 2000
 
+    minute = time.group(3)
     # проверяем наличие минут и дообрабатываем их
-    minute = int(time.group(2)) if len(time.groups()) == 2 else 0
+    minute = int(minute) if len(minute) == 2 else 0
 
     # возвращаем экземпляр даты-времени
-    return datetime.datetime(
+    return datetime(
         year=year,
         month=int(date.group(2)),
         day=int(date.group(1)),
@@ -98,7 +98,7 @@ def time(date_time):
     )
 
 
-def users_id(users_surnames: list):
+def names_to_id(users_surnames: list):
     """
     Получиет имена пользователей и возвращает их id
     :param users_surnames: список фамилий пользователей
@@ -108,7 +108,7 @@ def users_id(users_surnames: list):
     return [users[surname.lower()] for surname in users_surnames]
 
 
-def users_names(users_id: list):
+def id_to_names(users_id: list):
     """
     Получиет имена пользователей и возвращает их id
     :param users_id: список фамилий пользователей
@@ -122,9 +122,3 @@ def users_names(users_id: list):
                 break
 
     return names
-
-
-"""
-Операция создания словаря фамилия-id членов совета клуба
-!НЕ УДАЛЯТЬ!
-"""
